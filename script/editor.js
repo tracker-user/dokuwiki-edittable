@@ -578,6 +578,29 @@ window.edittable_plugins = window.edittable_plugins || {};
 
         $container.handsontable(handsontable_config);
 
+        // HOT's built-in undo/redo requires the table to be "listening" (have focus).
+        // After any interaction outside the table (toolbar clicks, scrolling, etc.) HOT
+        // stops listening, so Ctrl+Z is silently dropped. This handler fires at the
+        // document level and calls undo/redo directly, bypassing the listening check.
+        // It also re-focuses HOT so subsequent arrow-key navigation keeps working.
+        jQuery(document).on('keydown.edittable', function (e) {
+            var ctrlDown = (e.ctrlKey || e.metaKey) && !e.altKey;
+            if (!ctrlDown) {
+                return;
+            }
+            if (e.keyCode === 89 || (e.shiftKey && e.keyCode === 90)) {
+                $container.handsontable('listen');
+                $container.handsontable('redo');
+                e.stopImmediatePropagation();
+                e.preventDefault();
+            } else if (e.keyCode === 90) {
+                $container.handsontable('listen');
+                $container.handsontable('undo');
+                e.stopImmediatePropagation();
+                e.preventDefault();
+            }
+        });
+
     };
 
     jQuery(document).ready(edittable.loadEditor);
