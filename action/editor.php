@@ -6,6 +6,8 @@
  * @author Andreas Gohr <gohr@cosmocode.de>
  */
 
+if (!defined('DOKU_INC')) die();
+
 use dokuwiki\Form\Form;
 use dokuwiki\Utf8;
 
@@ -244,19 +246,13 @@ class action_plugin_edittable_editor extends DokuWiki_Action_Plugin
 
         if (isset($callable)) {
             return $callable($str);
-        } else {
-            if (UTF8_MBSTRING) {
-                // count fullwidth characters as 2, halfwidth characters as 1
-                $callable = 'mb_strwidth';
-            } elseif (method_exists(Utf8\PhpString::class, 'strlen')) {
-                // count any characters as 1
-                $callable = [Utf8\PhpString::class, 'strlen'];
-            } else {
-                // fallback deprecated utf8_strlen since 2019-06-09
-                $callable = 'utf8_strlen';
-            }
-            return $this->strWidth($str);
         }
+        if (UTF8_MBSTRING) {
+            $callable = 'mb_strwidth';
+        } else {
+            $callable = [Utf8\PhpString::class, 'strlen'];
+        }
+        return $this->strWidth($str);
     }
 
 }

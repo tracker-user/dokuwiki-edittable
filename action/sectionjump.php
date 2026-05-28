@@ -5,15 +5,19 @@
  * @author     Adrian Lang <lang@cosmocode.de>
  */
 
+if (!defined('DOKU_INC')) die();
+
 /**
- * redirect to the section containg the table
+ * redirect to the section containing the table
  */
 class action_plugin_edittable_sectionjump extends DokuWiki_Action_Plugin
 {
     /**
      * Register its handlers with the DokuWiki's event controller
+     *
+     * @param Doku_Event_Handler $controller
      */
-    function register(Doku_Event_Handler $controller)
+    public function register(Doku_Event_Handler $controller)
     {
         $controller->register_hook('ACTION_SHOW_REDIRECT', 'BEFORE', $this, 'jump_to_section');
     }
@@ -23,7 +27,7 @@ class action_plugin_edittable_sectionjump extends DokuWiki_Action_Plugin
      *
      * @param Doku_Event $event
      */
-    function jump_to_section($event)
+    public function jump_to_section($event)
     {
         global $INPUT;
         if (!$INPUT->has('edittable_data')) return;

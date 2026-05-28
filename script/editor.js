@@ -134,7 +134,7 @@ window.edittable_plugins = window.edittable_plugins || {};
         function getData() {return data;}
 
         var merges = edittable.getMerges(meta);
-        if (merges === []) {
+        if (!Array.isArray(merges) || merges.length === 0) {
             merges = true;
         }
         var lastselect = { row: 0, col: 0 };

@@ -37,9 +37,9 @@ window.addBtnActionNewTable = function addBtnActionNewTable($btn, props, edid) {
         } else {
             sel = window.getSelection(ed);
         }
-        addField('pre', ed.value.substr(0, sel.start));
-        addField('text', ed.value.substr(sel.start, sel.end - sel.start));
-        addField('suf', ed.value.substr(sel.end));
+        addField('pre', ed.value.substring(0, sel.start));
+        addField('text', ed.value.substring(sel.start, sel.end));
+        addField('suf', ed.value.substring(sel.end));
 
         // adora belle requires a range, even though we handle ranging ourselve here
         var range = document.createElement('input');

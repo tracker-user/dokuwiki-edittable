@@ -12,16 +12,14 @@
 // must be run within Dokuwiki
 if (!defined('DOKU_INC')) die();
 
-require_once DOKU_PLUGIN . "/edittable/renderer/inverse.php";
-
 class renderer_plugin_edittable_json extends renderer_plugin_edittable_inverse {
     /** @var array holds the data cells */
-    private $tdata = array();
+    private $tdata = [];
     /** @var array holds the cell meta data */
-    private $tmeta = array();
+    private $tmeta = [];
 
     /** @var array holds the meta data of the current cell */
-    private $tmetacell = array();
+    private $tmetacell = [];
 
     /** @var int current row */
     private $current_row = -1;
@@ -49,38 +47,36 @@ class renderer_plugin_edittable_json extends renderer_plugin_edittable_inverse {
 
     // renderer functions below
 
-    function table_open($maxcols = null, $numrows = null, $pos = null) {
-        // FIXME: is this needed somewhere? $this->_counter['table_begin_pos'] = strlen($this->doc);
+    public function table_open($maxcols = null, $numrows = null, $pos = null) {
     }
 
-    function table_close($pos = null) {
+    public function table_close($pos = null) {
     }
 
-    function tablerow_open() {
+    public function tablerow_open() {
         // move counters
         $this->current_row++;
         $this->current_col = 0;
     }
 
-    function tablerow_close() {
-        // resort just for better debug readability
+    public function tablerow_close() {
         ksort($this->tdata[$this->current_row]);
         ksort($this->tmeta[$this->current_row]);
     }
 
-    function tableheader_open($colspan = 1, $align = null, $rowspan = 1) {
+    public function tableheader_open($colspan = 1, $align = null, $rowspan = 1) {
         $this->_tablefield_open('th', $colspan, $align, $rowspan);
     }
 
-    function tableheader_close() {
+    public function tableheader_close() {
         $this->_tablefield_close();
     }
 
-    function tablecell_open($colspan = 1, $align = null, $rowspan = 1) {
+    public function tablecell_open($colspan = 1, $align = null, $rowspan = 1) {
         $this->_tablefield_open('td', $colspan, $align, $rowspan);
     }
 
-    function tablecell_close() {
+    public function tablecell_close() {
         $this->_tablefield_close();
     }
 
@@ -99,7 +95,7 @@ class renderer_plugin_edittable_json extends renderer_plugin_edittable_inverse {
         }
 
         // remember these, we use them when closing
-        $this->tmetacell = array();
+        $this->tmetacell = [];
         $this->tmetacell['tag'] = $tag;
         $this->tmetacell['colspan'] = $colspan;
         $this->tmetacell['rowspan'] = $rowspan;
