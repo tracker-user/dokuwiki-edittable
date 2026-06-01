@@ -5,6 +5,11 @@
  * Injects Handsontable and the table-editor scripts only on edit/preview pages,
  * keeping the global JS bundle free of the ~1.1 MB Handsontable payload.
  *
+ * Note: newtable.js (addBtnActionNewTable) is bundled globally in script.js
+ * because the toolbar can appear under any edit-like action, including custom
+ * ones from other plugins (e.g. diffpreview's 'changes' action).  Only the
+ * heavy rendering scripts are injected here conditionally.
+ *
  * @author Andreas Gohr <gohr@cosmocode.de>
  */
 
@@ -41,7 +46,6 @@ class action_plugin_edittable_scripts extends DokuWiki_Action_Plugin
             'lib/handsontable.full.js',
             'script/contextmenu.js',
             'script/editor.js',
-            'script/newtable.js',
         ];
 
         foreach ($files as $file) {
