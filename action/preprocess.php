@@ -5,6 +5,8 @@
  * @author Andreas Gohr <gohr@cosmocode.de>
  */
 
+if (!defined('DOKU_INC')) die();
+
 use dokuwiki\Extension\Event;
 
 /**

@@ -1,5 +1,47 @@
 # EditTable plugin for DokuWiki — local fork
 
+## Changes (2026-06-01)
+
+### PHP
+
+- Added `DOKU_INC` guards to all non-namespaced action files (`action/newtable.php`,
+  `action/preprocess.php`; previously missed in the 2026-05-28 pass)
+- Added `public` visibility to `register()` in `action/newtable.php` (checklist #3)
+- Fixed PHP 8.3 compile-time deprecation in `renderer/inverse.php`: `interwikilink()`
+  had `$name = null` before required parameters; dropped the default
+- Fixed `TypeError: count(): Argument #1 must be of type Countable|array, null given`
+  in `action/editor.php::handle_table_post()`: `json_decode()` returns `null` on invalid
+  JSON; added `is_array()` guard before calling `build_table()`
+- Simplified `strWidth()` in `action/editor.php` to `mb_strwidth()` directly
+  (PHP 8.3 always provides mbstring; removed the now-dead `UTF8_MBSTRING` conditional
+  and the `use dokuwiki\Utf8` import)
+- Corrected `getDataJSON()`/`getMetaJSON()` docblocks in `renderer/json.php`:
+  `@return array` → `@return string`; added PHP 8 return type hints
+- Flipped `private` → `protected` on all state properties in `renderer/inverse.php`
+  and `renderer/json.php`, and on `_table_to_wikitext()`, `_tablefield_open/close()`
+  (house style; allows subclass/plugin overrides)
+- Modernized remaining `array()` literals to `[]` in `action/editor.php` and
+  `action/newtable.php`; dropped unnecessary by-ref `&$Renderer` in `call_user_func_array`
+
+### JS
+
+- Restored resize-on-paste: `script/editor.js` wrapped `window.pasteText()` to trigger
+  `AutoResizer.check()` after toolbar insertions, but the wrapper was immediately
+  overwritten by the original reference on the very next line — deleted the overwrite
+
+### CSS
+
+- Removed dead parametric mixin `.a() when (@ini_site_width)` from `less/editor.less`;
+  it was defined but never called so the `#edittable__editor` site-width override
+  was silently no-op
+
+### Performance: conditional JS loading
+
+- `action/scripts.php` (new): registers `TPL_METAHEADER_OUTPUT` BEFORE to inject
+  Handsontable + contextmenu/editor/newtable scripts only on `edit`/`preview` actions
+- `script.js` stripped to `editbutton.js` only (the edit-button overlay needed on
+  page-view); the ~1.1 MB Handsontable bundle is now absent from every non-edit page
+
 ## Changes (2026-05-28)
 
 ### PHP
@@ -10,8 +52,6 @@
 - Removed deprecated `require_once` from `renderer/json.php` and `renderer/inverse.php`
   (DokuWiki autoloader handles class loading)
 - Replaced deprecated `utf8_strlen()` with `mb_strlen()` in `renderer/inverse.php`
-- Simplified `strWidth()` in `action/editor.php`: removed `utf8_strlen` fallback
-  (PHP 8.3 always provides mbstring)
 - Modernized `array()` literals to `[]` throughout `renderer/inverse.php` and `renderer/json.php`
 - Fixed null-unsafe string offset access `$text[0]` in `renderer/inverse.php`
 - Replaced `join()` with `implode()` in `renderer/inverse.php`

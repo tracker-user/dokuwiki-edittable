@@ -258,14 +258,12 @@ window.edittable_plugins = window.edittable_plugins || {};
                 // we're ready to intialize the toolbar now
                 initToolbar('tool__bar', 'handsontable__input', window.toolbar, false);
 
-                // we wrap DokuWiki's pasteText() here to get notified when the toolbar inserted something into our editor
+                // wrap DokuWiki's pasteText() so toolbar insertions trigger the AutoResizer
                 var original_pasteText = window.pasteText;
                 window.pasteText = function (selection, text, opts) {
-                    original_pasteText(selection, text, opts); // do what pasteText does
-                    // trigger resize
+                    original_pasteText(selection, text, opts);
                     jQuery('#handsontable__input').data('AutoResizer').check();
                 };
-                window.pasteText = original_pasteText;
 
                 /*
              This is a workaround to rerender the table. It serves two functions:

@@ -5,6 +5,8 @@
  * @author     Adrian Lang <lang@cosmocode.de>
  */
 
+if (!defined('DOKU_INC')) die();
+
 /**
  * Handles the inserting of a new table in a running edit session
  */
@@ -12,12 +14,12 @@ class action_plugin_edittable_newtable extends DokuWiki_Action_Plugin
 {
     /**
      * Register its handlers with the DokuWiki's event controller
+     *
+     * @param Doku_Event_Handler $controller
      */
-    function register(Doku_Event_Handler $controller)
+    public function register(Doku_Event_Handler $controller)
     {
         $controller->register_hook('TOOLBAR_DEFINE', 'AFTER', $this, 'toolbar');
-
-        //$controller->register_hook('ACTION_ACT_PREPROCESS', 'BEFORE', $this, 'handle_newtable');
         $controller->register_hook('PLUGIN_EDITTABLE_PREPROCESS_NEWTABLE', 'BEFORE', $this, 'handle_newtable');
     }
 
@@ -28,12 +30,12 @@ class action_plugin_edittable_newtable extends DokuWiki_Action_Plugin
      */
     public function toolbar(Doku_Event $event)
     {
-        $event->data[] = array(
+        $event->data[] = [
             'title' => $this->getLang('add_table'),
             'type'  => 'NewTable',
             'icon'  => '../../plugins/edittable/images/add_table.png',
-            'block' => true
-        );
+            'block' => true,
+        ];
     }
 
     /**

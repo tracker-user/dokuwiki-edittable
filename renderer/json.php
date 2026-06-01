@@ -14,34 +14,34 @@ if (!defined('DOKU_INC')) die();
 
 class renderer_plugin_edittable_json extends renderer_plugin_edittable_inverse {
     /** @var array holds the data cells */
-    private $tdata = [];
+    protected $tdata = [];
     /** @var array holds the cell meta data */
-    private $tmeta = [];
+    protected $tmeta = [];
 
     /** @var array holds the meta data of the current cell */
-    private $tmetacell = [];
+    protected $tmetacell = [];
 
     /** @var int current row */
-    private $current_row = -1;
+    protected $current_row = -1;
 
     /** @var int current column */
-    private $current_col = 0;
+    protected $current_col = 0;
 
     /**
-     * Returns the whole table data as two dimensional array
+     * Returns the whole table data as a JSON string
      *
-     * @return array
+     * @return string
      */
-    public function getDataJSON() {
+    public function getDataJSON(): string {
         return json_encode($this->tdata);
     }
 
     /**
-     * Returns meta data for all cells in a two dimensional array of arrays
+     * Returns cell meta data as a JSON string
      *
-     * @return array
+     * @return string
      */
-    public function getMetaJSON() {
+    public function getMetaJSON(): string {
         return json_encode($this->tmeta);
     }
 
@@ -81,14 +81,14 @@ class renderer_plugin_edittable_json extends renderer_plugin_edittable_inverse {
     }
 
     /**
-     * Used for a opening THs and TDs
+     * Used for opening THs and TDs
      *
-     * @param $tag
-     * @param $colspan
-     * @param $align
-     * @param $rowspan
+     * @param string $tag
+     * @param int $colspan
+     * @param string|null $align
+     * @param int $rowspan
      */
-    private function _tablefield_open($tag, $colspan, $align, $rowspan) {
+    protected function _tablefield_open($tag, $colspan, $align, $rowspan) {
         // skip cells that already exist - those are previous (span) cells!
         while(isset($this->tmeta[$this->current_row][$this->current_col])) {
             $this->current_col++;
@@ -108,7 +108,7 @@ class renderer_plugin_edittable_json extends renderer_plugin_edittable_inverse {
     /**
      * Used for closing THs and TDs
      */
-    private function _tablefield_close() {
+    protected function _tablefield_close() {
         // these have been set to the correct cell already
         $row = $this->current_row;
         $col = $this->current_col;

@@ -9,7 +9,6 @@
 if (!defined('DOKU_INC')) die();
 
 use dokuwiki\Form\Form;
-use dokuwiki\Utf8;
 
 /**
  * handles all the editor related things
@@ -74,10 +73,8 @@ class action_plugin_edittable_editor extends DokuWiki_Action_Plugin
         $Renderer     = plugin_load('renderer', 'edittable_json', true);
         $instructions = p_get_instructions($TEXT);
 
-        // Loop through the instructions
         foreach ($instructions as $instruction) {
-            // Execute the callback against the Renderer
-            call_user_func_array(array(&$Renderer, $instruction[0]), $instruction[1]);
+            call_user_func_array([$Renderer, $instruction[0]], $instruction[1]);
         }
 
         // output data and editor field
@@ -133,6 +130,8 @@ class action_plugin_edittable_editor extends DokuWiki_Action_Plugin
         $data = json_decode($INPUT->post->str('edittable_data'), true);
         $meta = json_decode($INPUT->post->str('edittable_meta'), true);
 
+        if (!is_array($data) || !is_array($meta)) return;
+
         $TEXT = $this->build_table($data, $meta);
     }
 
@@ -151,7 +150,7 @@ class action_plugin_edittable_editor extends DokuWiki_Action_Plugin
         $rows  = count($data);
         $cols  = $rows ? count($data[0]) : 0;
 
-        $colmax = $cols ? array_fill(0, $cols, 0) : array();
+        $colmax = $cols ? array_fill(0, $cols, 0) : [];
 
         // find maximum column widths
         for ($row = 0; $row < $rows; $row++) {
@@ -235,24 +234,14 @@ class action_plugin_edittable_editor extends DokuWiki_Action_Plugin
     }
 
     /**
-     * Return width of string
+     * Return display width of string (double-width for CJK characters)
      *
      * @param string $str
      * @return int
      */
-    public function strWidth($str)
+    public function strWidth(string $str): int
     {
-        static $callable;
-
-        if (isset($callable)) {
-            return $callable($str);
-        }
-        if (UTF8_MBSTRING) {
-            $callable = 'mb_strwidth';
-        } else {
-            $callable = [Utf8\PhpString::class, 'strlen'];
-        }
-        return $this->strWidth($str);
+        return mb_strwidth($str);
     }
 
 }

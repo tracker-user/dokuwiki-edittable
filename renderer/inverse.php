@@ -12,17 +12,17 @@ class renderer_plugin_edittable_inverse extends Doku_Renderer {
     public $doc = '';
 
     // bunch of internal state variables
-    private $prepend_not_block = '';
-    private $_key = 0;
-    private $_pos = 0;
-    private $_ownspan = 0;
-    private $previous_block = false;
-    private $_row = 0;
-    private $_rowspans = [];
-    private $_table = [];
-    private $_liststack = [];
-    private $quotelvl = 0;
-    private $extlinkparser = null;
+    protected $prepend_not_block = '';
+    protected $_key = 0;
+    protected $_pos = 0;
+    protected $_ownspan = 0;
+    protected $previous_block = false;
+    protected $_row = 0;
+    protected $_rowspans = [];
+    protected $_table = [];
+    protected $_liststack = [];
+    protected $quotelvl = 0;
+    protected $extlinkparser = null;
     protected $extlinkPatterns = [];
 
     public function getFormat() {
@@ -459,7 +459,7 @@ class renderer_plugin_edittable_inverse extends Doku_Renderer {
         }
     }
 
-    public function interwikilink($match, $name = null, $wikiName, $wikiUri) {
+    public function interwikilink($match, $name, $wikiName, $wikiUri) {
         $this->not_block();
         $this->doc .= "[[$wikiName>$wikiUri";
         if($name !== null) {
@@ -674,7 +674,7 @@ class renderer_plugin_edittable_inverse extends Doku_Renderer {
      * @param array $_table
      * @return string
      */
-    private function _table_to_wikitext($_table) {
+    protected function _table_to_wikitext($_table) {
         // Preprocess table for rowspan, make table 0-based.
         $table = [];
         $keys  = array_keys($_table);
